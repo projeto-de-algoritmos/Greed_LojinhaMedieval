@@ -119,6 +119,67 @@ frame_index = 0
 frame_rate = 30  # Taxa de atualização dos quadros (frames por segundo)
 clock = pygame.time.Clock()
 
+
+# Variáveis do novo módulo
+new_module_running = False  # Variável para controlar o novo módulo
+new_module_background_image_path = "new_background_image.png"  # Caminho do novo background
+new_module_music_path = "new_background_music.mp3"  # Caminho da nova música de fundo
+
+# Função para o loop do novo módulo
+
+def new_module_loop():
+    # Carregar o novo background
+    new_module_background_image = pygame.image.load(new_module_background_image_path)
+    new_module_background_image = pygame.transform.scale(new_module_background_image, (screen_width, screen_height))
+
+    # Carregar a nova música de fundo
+    pygame.mixer.music.load(new_module_music_path)
+    pygame.mixer.music.set_volume(0.5)  # Definir o volume do áudio
+    pygame.mixer.music.play(-1)  # Reproduzir a música de fundo em um loop infinito
+
+        
+    # Variáveis do personagem
+    character_image = pygame.image.load("nivel1.png")
+
+    # Função para redimensionar a imagem
+    def resize_image(image, width, height):
+        return pygame.transform.scale(image, (width, height))
+
+    character_width = 100
+    character_height = 100
+    character_image = pygame.transform.scale(character_image, (character_width, character_height))
+
+    # Posição inicial do personagem
+    character_x = screen_width // 2 - character_width // 2  # Posição inicial no centro horizontal da tela
+    character_y = screen_height // 2  - character_height // 2  # Posição inicial no lado inferior da tela
+
+    # Carregar o personagem
+    character_rect = character_image.get_rect()
+    character_rect.centerx = screen_width // 2
+    character_rect.bottom = 0
+
+  
+
+    # Loop do novo módulo
+    new_module_running = True
+    while new_module_running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                new_module_running = False
+
+        # Movimento do personagem
+
+
+        window.blit(new_module_background_image, (0, 0))
+        pygame.display.update()
+
+        pygame.time.Clock().tick(60)  # Limitar a taxa de quadros para 60 FPS
+
+    # Parar a música quando o novo módulo terminar
+    pygame.mixer.music.stop()
+
+    pygame.quit()
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -166,7 +227,11 @@ while running:
             text_x = (dialogue_width - text_surface.get_width()) // 2
             text_y = (dialogue_height - text_surface.get_height()) // 2
             dialogue_surface.blit(text_surface, (text_x, text_y))
+            pygame.mixer.music.stop()
 
+            new_module_loop()
+
+            
     pygame.display.update()
 
     if clicked_on_screen:
