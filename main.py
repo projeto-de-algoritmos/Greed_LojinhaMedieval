@@ -12,8 +12,7 @@ window = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Jogo com GIF Animado")
 
 # Carregar o arquivo GIF animado
-gif_path = "animation.gif"
-video = VideoFileClip(gif_path)
+video = VideoFileClip("./assets/img/animation.gif")
 video.set_duration(1)  # Defina a duração do GIF (em segundos)
 frames = []
 
@@ -25,7 +24,7 @@ for t in range(int(video.duration * video.fps)):
     frames.append(surface)
 
 # Variáveis do personagem
-character_image = pygame.image.load("character.png")
+character_image = pygame.image.load("./assets/img/waitress.png")
 
 # Função para redimensionar a imagem
 def resize_image(image, width, height):
@@ -101,14 +100,14 @@ selected_barrels = knapsack(barrels, max_weight_per_cart)
 selected_barrels_names = [barrel["name"] for barrel in selected_barrels]
 
 # Carregar a música de fundo
-pygame.mixer.music.load("background_music.mp3")
+pygame.mixer.music.load("./assets/sound/background_music.mp3")
 pygame.mixer.music.set_volume(0.5)  # Definir o volume do áudio
 
 # Reproduzir a música de fundo em um loop infinito
 pygame.mixer.music.play(-1)
 
 # Carregar a imagem de fundo da tela inicial
-background_image = pygame.image.load("background_image.png")
+background_image = pygame.image.load("./assets/img/start_background_image.png")
 background_image = resize_image(background_image, screen_width, screen_height)
 
 # Variável para controlar se o jogador clicou na tela inicial
@@ -117,7 +116,7 @@ clicked_on_screen = False
 # Loop principal do jogo
 running = True
 frame_index = 0
-frame_rate = 60  # Taxa de atualização dos quadros (frames por segundo)
+frame_rate = 30  # Taxa de atualização dos quadros (frames por segundo)
 clock = pygame.time.Clock()
 
 while running:
@@ -154,7 +153,7 @@ while running:
             text_y = (dialogue_height - text_surface.get_height()) // 2
             dialogue_surface.blit(text_surface, (text_x, text_y))
             
-            dialogue_text = "CLique em espaço para continuar..."
+            dialogue_text = "Clique em espaço para continuar..."
             text_surface = dialogue_font.render(dialogue_text, True, (255, 255, 255))
             text_x = (dialogue_width - text_surface.get_width()) // 1.8
             text_y = (dialogue_height - text_surface.get_height()) // 1.2
