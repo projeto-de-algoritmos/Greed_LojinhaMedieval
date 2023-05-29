@@ -122,24 +122,23 @@ clock = pygame.time.Clock()
 
 # Variáveis do novo módulo
 new_module_running = False  # Variável para controlar o novo módulo
-new_module_background_image_path = "new_background_image.png"  # Caminho do novo background
-new_module_music_path = "new_background_music.mp3"  # Caminho da nova música de fundo
+new_module_music_path = ""  # Caminho da nova música de fundo
 
 # Função para o loop do novo módulo
 
 def new_module_loop():
     # Carregar o novo background
-    new_module_background_image = pygame.image.load(new_module_background_image_path)
+    new_module_background_image = pygame.image.load("./assets/img/new_background_image.png")
     new_module_background_image = pygame.transform.scale(new_module_background_image, (screen_width, screen_height))
 
     # Carregar a nova música de fundo
-    pygame.mixer.music.load(new_module_music_path)
+    pygame.mixer.music.load("./assets/sound/ingame_music.mp3")
     pygame.mixer.music.set_volume(0.5)  # Definir o volume do áudio
     pygame.mixer.music.play(-1)  # Reproduzir a música de fundo em um loop infinito
 
         
     # Variáveis do personagem
-    character_image = pygame.image.load("nivel1.png")
+    character_image = pygame.image.load("./assets/img/nivel1.png")
 
     # Função para redimensionar a imagem
     def resize_image(image, width, height):
