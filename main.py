@@ -107,6 +107,13 @@ pygame.mixer.music.set_volume(0.5)  # Definir o volume do áudio
 # Reproduzir a música de fundo em um loop infinito
 pygame.mixer.music.play(-1)
 
+# Carregar a imagem de fundo da tela inicial
+background_image = pygame.image.load("background_image.png")
+background_image = resize_image(background_image, screen_width, screen_height)
+
+# Variável para controlar se o jogador clicou na tela inicial
+clicked_on_screen = False
+
 # Loop principal do jogo
 running = True
 frame_index = 0
@@ -119,39 +126,53 @@ while running:
             running = False
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_SPACE and clicked_on_screen:
                 current_dialogue_index += 1
 
+        if event.type == pygame.MOUSEBUTTONDOWN and not clicked_on_screen:
+            clicked_on_screen = True
+
     window.fill((255, 255, 255))  # Preenche a tela com uma cor de fundo
-    window.blit(frames[frame_index % len(frames)], (0, 0))  # Exibe o quadro atual do GIF
-    window.blit(character_image, (character_x, character_y))  # Exibe o personagem na tela
 
-    dialogue_x = 0
-    dialogue_y = screen_height - dialogue_height
-    window.blit(dialogue_surface, (dialogue_x, dialogue_y))
+    if not clicked_on_screen:
+        window.blit(background_image, (0, 0))  # Exibe a imagem de fundo da tela inicial
+    else:
+        window.blit(frames[frame_index % len(frames)], (0, 0))  # Exibe o quadro atual do GIF
+        window.blit(character_image, (character_x, character_y))  # Exibe o personagem na tela
 
-    # Limpa o texto anterior
-    dialogue_surface.fill((0, 0, 0))
+        dialogue_x = 0
+        dialogue_y = screen_height - dialogue_height
+        window.blit(dialogue_surface, (dialogue_x, dialogue_y))
 
-    if current_dialogue_index < len(dialogue_texts):
-        dialogue_text = dialogue_texts[current_dialogue_index]
-        text_surface = dialogue_font.render(dialogue_text, True, (255, 255, 255))
-        text_x = (dialogue_width - text_surface.get_width()) // 2
-        text_y = (dialogue_height - text_surface.get_height()) // 2
-        dialogue_surface.blit(text_surface, (text_x, text_y))
+        # Limpa o texto anterior
+        dialogue_surface.fill((0, 0, 0))
 
-    elif current_dialogue_index == len(dialogue_texts):
-        dialogue_text = "Barris selecionados: " + ", ".join(selected_barrels_names)
-        text_surface = dialogue_font.render(dialogue_text, True, (255, 255, 255))
-        text_x = (dialogue_width - text_surface.get_width()) // 2
-        text_y = (dialogue_height - text_surface.get_height()) // 2
-        dialogue_surface.blit(text_surface, (text_x, text_y))
+        if current_dialogue_index < len(dialogue_texts):
+            dialogue_text = dialogue_texts[current_dialogue_index]
+            text_surface = dialogue_font.render(dialogue_text, True, (255, 255, 255))
+            text_x = (dialogue_width - text_surface.get_width()) // 2
+            text_y = (dialogue_height - text_surface.get_height()) // 2
+            dialogue_surface.blit(text_surface, (text_x, text_y))
+            
+            dialogue_text = "CLique em espaço para continuar..."
+            text_surface = dialogue_font.render(dialogue_text, True, (255, 255, 255))
+            text_x = (dialogue_width - text_surface.get_width()) // 1.8
+            text_y = (dialogue_height - text_surface.get_height()) // 1.2
+            dialogue_surface.blit(text_surface, (text_x, text_y))
+
+        
+        elif current_dialogue_index == len(dialogue_texts):
+            dialogue_text = "Barris selecionados: " + ", ".join(selected_barrels_names)
+            text_surface = dialogue_font.render(dialogue_text, True, (255, 255, 255))
+            text_x = (dialogue_width - text_surface.get_width()) // 2
+            text_y = (dialogue_height - text_surface.get_height()) // 2
+            dialogue_surface.blit(text_surface, (text_x, text_y))
 
     pygame.display.update()
 
-    frame_index += 1
+    if clicked_on_screen:
+        frame_index += 1
 
     clock.tick(frame_rate)
 
 pygame.quit()
-1
