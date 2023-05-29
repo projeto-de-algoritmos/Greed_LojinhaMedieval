@@ -1,6 +1,8 @@
 import pygame
 from moviepy.editor import *
 import numpy as np
+import random
+
 
 # Inicialização do Pygame
 pygame.init()
@@ -127,58 +129,82 @@ new_module_music_path = ""  # Caminho da nova música de fundo
 # Função para o loop do novo módulo
 
 def new_module_loop():
-    # Carregar o novo background
-    new_module_background_image = pygame.image.load("./assets/img/new_background_image.png")
+
+    # Load the new module background
+    new_module_background_image_path = "./assets/img/new_background_image.png"
+    new_module_background_image = pygame.image.load(new_module_background_image_path)
     new_module_background_image = pygame.transform.scale(new_module_background_image, (screen_width, screen_height))
 
-    # Carregar a nova música de fundo
-    pygame.mixer.music.load("./assets/sound/ingame_music.mp3")
-    pygame.mixer.music.set_volume(0.5)  # Definir o volume do áudio
-    pygame.mixer.music.play(-1)  # Reproduzir a música de fundo em um loop infinito
+    # Load the new module music
+    new_module_music_path = "./assets/sound/ingame_music.mp3"
+    pygame.mixer.music.load(new_module_music_path)
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
 
-        
-    # Variáveis do personagem
-    character_image = pygame.image.load("./assets/img/nivel1.png")
+    # Load the image to be displayed
+    image_path = "./assets/img/beer.png"
+    image_width = 100
+    image_height = 100
+    image = pygame.image.load(image_path)
+    image = pygame.transform.scale(image, (image_width, image_height))
 
-    # Função para redimensionar a imagem
-    def resize_image(image, width, height):
-        return pygame.transform.scale(image, (width, height))
+    # Calculate the horizontal spacing between images
+    num_images = 5
+    total_spacing = screen_width - (image_width * num_images)
+    spacing = total_spacing // (num_images + 1)
 
-    character_width = 100
-    character_height = 100
-    character_image = pygame.transform.scale(character_image, (character_width, character_height))
+    # Calculate the initial x-coordinate for the first image
+    start_x = (screen_width - (image_width * num_images) - (spacing * (num_images - 1))) // 2
 
-    # Posição inicial do personagem
-    character_x = screen_width // 2 - character_width // 2  # Posição inicial no centro horizontal da tela
-    character_y = screen_height // 2  - character_height // 2  # Posição inicial no lado inferior da tela
+    # Define the color for the glowing effect
+    glow_color = (255, 255, 0)  # Yellow
 
-    # Carregar o personagem
-    character_rect = character_image.get_rect()
-    character_rect.centerx = screen_width // 2
-    character_rect.bottom = 0
+    # Store the visibility status of each image
+    image_visible = [True] * num_images
 
-  
-
-    # Loop do novo módulo
+    # Loop of the new module
     new_module_running = True
     while new_module_running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 new_module_running = False
-
-        # Movimento do personagem
-
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Left mouse button
+                    # Check if the mouse clicked on any visible image
+                    for i in range(num_images):
+                        if image_visible[i]:
+                            x = start_x + (i * (image_width + spacing))
+                            y = (screen_height - image_height) // 2
+                            image_rect = pygame.Rect(x, y, image_width, image_height)
+                            if image_rect.collidepoint(event.pos):
+                                image_visible[i] = False
+                                break
 
         window.blit(new_module_background_image, (0, 0))
+
+        # Display the images equally spaced in the middle of the screen
+        for i in range(num_images):
+            if image_visible[i]:
+                x = start_x + (i * (image_width + spacing))
+                y = (screen_height - image_height) // 2
+
+                image_rect = pygame.Rect(x, y, image_width, image_height)
+                if image_rect.collidepoint(pygame.mouse.get_pos()):
+                    # Apply the color tint effect (glowing effect)
+                    tinted_image = image.copy()
+                    tinted_image.fill(glow_color, special_flags=pygame.BLEND_RGB_ADD)
+                    window.blit(tinted_image, (x, y))
+                else:
+                    window.blit(image, (x, y))
+
         pygame.display.update()
+        pygame.time.Clock().tick(60)  # Limit the frame rate to 60 FPS
 
-        pygame.time.Clock().tick(60)  # Limitar a taxa de quadros para 60 FPS
-
-    # Parar a música quando o novo módulo terminar
+    # Stop the music when the new module ends
     pygame.mixer.music.stop()
 
     pygame.quit()
-
+    
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
