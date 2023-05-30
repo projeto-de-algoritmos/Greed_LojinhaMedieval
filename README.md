@@ -1,30 +1,17 @@
-**!! Atenção: Renomeie o seu repositório para (Tema)_(NomeDoProjeto). !!** 
+# Greed_LojinhaMedieval
 
-Temas:
- - Grafos1
- - Grafos2
- - PD
- - D&C
- - Greed
- - Final 
- 
- **!! *Não coloque os nomes dos alunos no título do repositório*. Exemplo de título correto: Grafos2_Labirinto-do-Minotauro !!**
- 
- (Apague essa seção)
-
-# NomedoProjeto
-
-**Número da Lista**: X<br>
-**Conteúdo da Disciplina**: XXXXXXXXXX<br>
+**Número da Lista**: 28<br>
+**Conteúdo da Disciplina**: Greed <br>
 
 ## Alunos
 |Matrícula | Aluno |
 | -- | -- |
-| xx/xxxxxx  |  xxxx xxxx xxxxx |
-| xx/xxxxxx  |  xxxx xxxx xxxxx |
+| 19/0042419  |  Davi Matheus da Rocha de Oliveira |
+| 19/0058650  |  Natanael Fernandes Coelho Filho |
 
 ## Sobre 
-Descreva os objetivos do seu projeto e como ele funciona. 
+
+Neste projeto, buscamos explorar o algoritmo de Knapsack de forma descontraída e divertida por meio de um simulador de taverna medieval, utilizando a biblioteca Pygame para criar um jogo mais complexo e interessante. No jogo, o usuário será desafiado a escolher a combinação de itens que resultará no maior lucro possível, levando em consideração a restrição de capacidade máxima de vendas, que é de 100. O objetivo é que o usuário compreenda e pratique o algoritmo de Knapsack enquanto se diverte no jogo. Então, qual será o seu máximo lucro?
 
 ## Screenshots
 
@@ -33,9 +20,10 @@ Descreva os objetivos do seu projeto e como ele funciona.
 ![](screenshot/sc3.png)
 
 ## Instalação 
-**Linguagem**: xxxxxx<br>
-**Framework**: (caso exista)<br>
-Descreva os pré-requisitos para rodar o seu projeto e os comandos necessários.
+**Linguagem**: Python<br>
+**Framework**: Nenhum<br>
+
+python main.py
 
 ## Uso 
 
@@ -69,7 +57,9 @@ python3 main.py
 Siga as instruções dadas durante a execução do jogo e se divirta.
 
 ## Outros 
-Quaisquer outras informações sobre seu projeto podem ser descritas abaixo.
+Para iniciar o jogo, simplesmente clique na tela inicial. 
+Recomendamos reduzir o volume do seu dispositivo, pois a música de fundo ocasionalmente pode estar um pouco alta. 
+Este jogo é projetado para funcionar em um loop infinito, permitindo que você jogue e se divirta pelo tempo que desejar!
 
 
 
