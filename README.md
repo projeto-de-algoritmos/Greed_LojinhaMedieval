@@ -35,7 +35,35 @@ Adicione 3 ou mais screenshots do projeto em funcionamento.
 Descreva os pré-requisitos para rodar o seu projeto e os comandos necessários.
 
 ## Uso 
-Explique como usar seu projeto caso haja algum passo a passo após o comando de execução.
+
+### Pré-requisitos
+
+Antes de executar o programa, certifique-se de ter o Python 3 instalado em seu sistema. Você pode fazer o download da versão mais recente do Python em python.org.
+
+### Instalação de Requisitos
+
+O programa requer algumas dependências que devem ser instaladas, desta forma siga as etapas abaixo:
+
+1. Abra o terminal e navegue até o diretório do projeto.
+
+2. Execute o seguinte comando para instalar as dependências:
+
+```shell
+pip install -r requirements.txt
+# Isso garantirá que todas as bibliotecas necessárias sejam instaladas corretamente.
+```
+
+### Executando o Programa
+
+Após ter instalado os requisitos, você pode executar o programa seguindo estas etapas:
+
+1. Execute o seguinte comando para iniciar o programa:
+
+```shell
+python3 main.py
+```
+
+Siga as instruções dadas durante a execução do jogo e se divirta.
 
 ## Outros 
 Quaisquer outras informações sobre seu projeto podem ser descritas abaixo.
