@@ -2,104 +2,61 @@ import pygame
 from moviepy.editor import *
 import numpy as np
 import random
+from settings import *
 
 
 # Inicialização do Pygame
 pygame.init()
 
 # Configuração da janela
-screen_width = 800
-screen_height = 600
-window = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("Jogo com GIF Animado")
+window = pygame.display.set_mode((RES))
+pygame.display.set_caption("Bar do Gordo")
 
 # Carregar o arquivo GIF animado
 video = VideoFileClip("./assets/img/animation.gif")
-video.set_duration(1)  # Defina a duração do GIF (em segundos)
+video.set_duration(1)  # duração do GIF (em segundos)
 frames = []
 
 for t in range(int(video.duration * video.fps)):
     frame = video.get_frame(t / video.fps)
     frame = np.rot90(frame, 1)  # Gira a imagem em 90 graus
     surface = pygame.surfarray.make_surface(frame)
-    surface = pygame.transform.scale(surface, (screen_width, screen_height))  # Redimensiona a imagem
+    surface = pygame.transform.scale(surface, (RES))  # Redimensiona a imagem
     frames.append(surface)
 
-# Variáveis do personagem
-character_image = pygame.image.load("./assets/img/waitress.png")
-
 # Função para redimensionar a imagem
+
 def resize_image(image, width, height):
     return pygame.transform.scale(image, (width, height))
 
-# Dimensões do personagem
-character_width = 600
-character_height = 600
 
-# Redimensionar a imagem do personagem
-character_image = resize_image(character_image, character_width, character_height)
-
-# Posição inicial do personagem
-character_x = screen_width // 2 - character_width // 2  # Posição inicial no centro horizontal da tela
-character_y = screen_height // 2  - character_height // 2  # Posição inicial no lado inferior da tela
+# Ajudante
+waitress = pygame.image.load("./assets/img/waitress.png")
+waitress = resize_image(waitress, waitress_width, waitress_height)
+waitress_x = WIDTH // 2 - waitress_width // 2
+waitress_y = HEIGHT // 2 - waitress_height // 2
 
 # Configuração da barra de diálogo
-dialogue_width = screen_width
+dialogue_width = WIDTH
 dialogue_height = 150
 dialogue_surface = pygame.Surface((dialogue_width, dialogue_height))
 dialogue_surface.fill((0, 0, 0))  # Cor de fundo da barra de diálogo
 
-dialogue_font = pygame.font.Font(None, 24)  
+dialogue_font = pygame.font.Font(None, 24)
 dialogue_texts = [
-    "Bem-vindo, aventureiro! Está pronto para participar do nosso desafio da Lojinha Mediavel?",
-    "Nós temos uma seleção de barris com diferentes bebidas deliciosas.",
-    "Cada barril tem um peso e um valor associados.",
-    "Seu objetivo é distribuir esses barris entre duas carroças de carga",
-    "de forma que a soma dos valores seja maximizada",
-    "e o peso em cada carroça seja igual ou o mais próximo possível.",
-    "Ah, sim! Além da diversão de participar, há recompensas em jogo.",
-    "Se conseguir distribuir os barris de forma eficiente, receberá moedas de ouro como prêmio.",
-    "E, é claro, a satisfação de se tornar o melhor estrategista da taverna!",
-    "Eai, Está Pronto Para começar?",
+    "Bem vindo de volta Sir Gordo!",
+    "Já preparei 100 litros da melhor cerveja do reino de Camaroes",
+    "...",
+    "Toc Toc",
+    "Que barulho é esse tão cedo",
+    "Olha! parece que chegaram 5 clientes querendo comprar cerveja",
+    "Parece que já vamos vender tudo",
+    "'Eles estão loucos por uma biritinha. risos!'",
+    "Entre as ofertas, ache a melhor distribuição para que possa lucrar o máximo possível",
+    "Caso erre você perderá e entraremos em falencia ç-ç",
+    "De o seu melhor."
 ]
 current_dialogue_index = 0  # Índice inicial do texto do diálogo
-
-# Barris
-barrels = [
-    {"name": "Barril 1", "weight": 4, "value": 8},
-    {"name": "Barril 2", "weight": 3, "value": 5},
-    {"name": "Barril 3", "weight": 2, "value": 3},
-    {"name": "Barril 4", "weight": 5, "value": 10},
-    {"name": "Barril 5", "weight": 1, "value": 2},
-]
-
-# Função para calcular a distribuição eficiente dos barris
-def knapsack(barrels, max_weight):
-    n = len(barrels)
-    dp = [[0] * (max_weight + 1) for _ in range(n + 1)]
-
-    for i in range(1, n + 1):
-        for j in range(1, max_weight + 1):
-            if barrels[i - 1]["weight"] <= j:
-                dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - barrels[i - 1]["weight"]] + barrels[i - 1]["value"])
-            else:
-                dp[i][j] = dp[i - 1][j]
-
-    selected_barrels = []
-    i = n
-    j = max_weight
-    while i > 0 and j > 0:
-        if dp[i][j] != dp[i - 1][j]:
-            selected_barrels.append(barrels[i - 1])
-            j -= barrels[i - 1]["weight"]
-        i -= 1
-
-    return selected_barrels
-
-# Distribuição eficiente dos barris
-max_weight_per_cart = 7
-selected_barrels = knapsack(barrels, max_weight_per_cart)
-selected_barrels_names = [barrel["name"] for barrel in selected_barrels]
 
 # Carregar a música de fundo
 pygame.mixer.music.load("./assets/sound/background_music.mp3")
@@ -110,7 +67,7 @@ pygame.mixer.music.play(-1)
 
 # Carregar a imagem de fundo da tela inicial
 background_image = pygame.image.load("./assets/img/start_background_image.png")
-background_image = resize_image(background_image, screen_width, screen_height)
+background_image = resize_image(background_image, WIDTH, HEIGHT)
 
 # Variável para controlar se o jogador clicou na tela inicial
 clicked_on_screen = False
@@ -118,98 +75,216 @@ clicked_on_screen = False
 # Loop principal do jogo
 running = True
 frame_index = 0
-frame_rate = 30  # Taxa de atualização dos quadros (frames por segundo)
 clock = pygame.time.Clock()
 
 
-# Variáveis do novo módulo
-new_module_running = False  # Variável para controlar o novo módulo
-new_module_music_path = ""  # Caminho da nova música de fundo
+# dados do player
+player_capacity = 100
+player_profit = 0
+
+
+def knapsack(capacity, items, n):
+    # Create a 2D matrix to store the maximum values for each subproblem
+    dp = [[0] * (capacity + 1) for _ in range(n + 1)]
+
+    # Fill the matrix in a bottom-up manner
+    for i in range(n + 1):
+        for w in range(capacity + 1):
+            # Base case: no item or no capacity
+            if i == 0 or w == 0:
+                dp[i][w] = 0
+            # If the current item can be included, consider its value
+            elif items[i - 1][0] <= w:
+                dp[i][w] = max(items[i - 1][1] + dp[i - 1]
+                               [w - items[i - 1][0]], dp[i - 1][w])
+            # Otherwise, exclude the current item
+            else:
+                dp[i][w] = dp[i - 1][w]
+
+    # Find the items included in the optimal solution
+    included_items = []
+    i = n
+    j = capacity
+    while i > 0 and j > 0:
+        if dp[i][j] != dp[i - 1][j]:
+            included_items.append(i)
+            j -= items[i - 1][0]
+        i -= 1
+
+    # Return the maximum value and the included items
+    return dp[n][capacity], included_items
 
 # Função para o loop do novo módulo
 
-def new_module_loop():
+
+def show_beer_details(num, beer, x, y, beer_width, beer_height):
+    beer_qnt = beer[0]
+    beer_price = beer[1]
+    beer_number = dialogue_font.render(f"Cerveja {num}", True, (255, 255, 255))
+    details_x = x + (beer_width - beer_number.get_width()) // 2
+    details_y = y + beer_height + (beer_number.get_height() + 5)
+    window.blit(beer_number, (details_x, details_y))
+
+    
+    # Black rectangle dimensions
+    rect_width = beer_width
+    rect_height = 4 * beer_number.get_height() + 4 * 5
+    rect_x = x
+    rect_y = details_y - beer_number.get_height() - 5
+    # Draw the black rectangle
+    pygame.draw.rect(window, (0, 0, 0), (rect_x, rect_y, rect_width, rect_height))
+
+    window.blit(beer_number, (details_x, details_y))
+
+    beer_qnt_surface = dialogue_font.render(
+        f"Qnt: {beer_qnt}", True, (255, 255, 255))
+    qnt_x = x + (beer_width - beer_qnt_surface.get_width()) // 2
+    qnt_y = details_y + beer_qnt_surface.get_height() + 5
+    window.blit(beer_qnt_surface, (qnt_x, qnt_y))
+
+    beer_price_surface = dialogue_font.render(
+        f"R$ {beer_price :.2f}", True, (255, 255, 255))
+    price_x = x + (beer_width - beer_price_surface.get_width()) // 2
+    price_y = qnt_y + beer_qnt_surface.get_height() + 5
+    window.blit(beer_price_surface, (price_x, price_y))
+
+def get_items():
+    qnt = 150
+    items = []
+    for i in range(0, 4):
+        num = random.randint(20, 32)
+        items.append((num, random.randint(20, 500)))
+        qnt -= num
+    items.append((qnt, random.randint(20, 500)))
+    return items
+
+def in_game_loop(player_capacity, player_profit):
+    beers_array = get_items()  # (weight, value) pairs
+    qnt_beer = len(beers_array)
+
+    max_value, included_items = knapsack(CAPACITY, beers_array, qnt_beer)
 
     # Load the new module background
-    new_module_background_image_path = "./assets/img/new_background_image.png"
-    new_module_background_image = pygame.image.load(new_module_background_image_path)
-    new_module_background_image = pygame.transform.scale(new_module_background_image, (screen_width, screen_height))
+    in_game_background = pygame.image.load(
+        "./assets/img/ingame_background.png")
+    in_game_background = pygame.transform.scale(in_game_background, (RES))
 
     # Load the new module music
-    new_module_music_path = "./assets/sound/ingame_music.mp3"
-    pygame.mixer.music.load(new_module_music_path)
+    pygame.mixer.music.load("./assets/sound/ingame_music.mp3")
     pygame.mixer.music.set_volume(0.5)
     pygame.mixer.music.play(-1)
 
     # Load the image to be displayed
-    image_path = "./assets/img/beer.png"
-    image_width = 100
-    image_height = 100
-    image = pygame.image.load(image_path)
-    image = pygame.transform.scale(image, (image_width, image_height))
+    beer_width = 100
+    beer_height = 100
+    beer = pygame.image.load("./assets/img/beer.png")
+    beer = pygame.transform.scale(beer, (beer_width, beer_height))
 
     # Calculate the horizontal spacing between images
-    num_images = 5
-    total_spacing = screen_width - (image_width * num_images)
-    spacing = total_spacing // (num_images + 1)
+    total_spacing = WIDTH - (beer_width * qnt_beer)
+    spacing = total_spacing // (qnt_beer + 1)
 
     # Calculate the initial x-coordinate for the first image
-    start_x = (screen_width - (image_width * num_images) - (spacing * (num_images - 1))) // 2
+    start_x = (WIDTH - (beer_width * qnt_beer) -
+               (spacing * (qnt_beer - 1))) // 2
 
     # Define the color for the glowing effect
     glow_color = (255, 255, 0)  # Yellow
 
     # Store the visibility status of each image
-    image_visible = [True] * num_images
-
+    beer_visible = [True] * qnt_beer
+    
+    # Button details
+    button_width = 200
+    button_height = 50
+    button_x = (WIDTH - button_width) // 2
+    button_y = HEIGHT - button_height - 20
+    button_text_surface = dialogue_font.render("Ja vendi o bastante", True, (255, 255, 255))
+    button_text_x = button_x + (button_width - button_text_surface.get_width()) // 2
+    button_text_y = button_y + (button_height - button_text_surface.get_height()) // 2
+    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+    
     # Loop of the new module
-    new_module_running = True
-    while new_module_running:
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                new_module_running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left mouse button
                     # Check if the mouse clicked on any visible image
-                    for i in range(num_images):
-                        if image_visible[i]:
-                            x = start_x + (i * (image_width + spacing))
-                            y = (screen_height - image_height) // 2
-                            image_rect = pygame.Rect(x, y, image_width, image_height)
-                            if image_rect.collidepoint(event.pos):
-                                image_visible[i] = False
+                    for i in range(qnt_beer):
+                        if beer_visible[i]:
+                            x = start_x + (i * (beer_width + spacing))
+                            y = (HEIGHT - beer_height) // 2
+                            beer_rect = pygame.Rect(
+                                x, y, beer_width, beer_height)
+                            if beer_rect.collidepoint(event.pos):
+                                beer_visible[i] = False
+                                player_capacity -= beers_array[i][0]
+                                player_profit += beers_array[i][1]
+                                if player_capacity < 0:
+                                    window.blit(in_game_background, (0, 0))
+                                    return "Bankrupt"
+                                elif player_capacity == 0:
+                                    window.blit(in_game_background, (0, 0))
+                                    return [player_profit, max_value, included_items]
                                 break
+                    # Check if the mouse clicked within the button rectangle
+                    if button_rect.collidepoint(event.pos):
+                        return [player_profit, max_value, included_items]
 
-        window.blit(new_module_background_image, (0, 0))
+        window.blit(in_game_background, (0, 0))
 
         # Display the images equally spaced in the middle of the screen
-        for i in range(num_images):
-            if image_visible[i]:
-                x = start_x + (i * (image_width + spacing))
-                y = (screen_height - image_height) // 2
+        for i in range(qnt_beer):
+            if beer_visible[i]:
+                x = start_x + (i * (beer_width + spacing))
+                y = (HEIGHT - beer_height) // 2
 
-                image_rect = pygame.Rect(x, y, image_width, image_height)
-                if image_rect.collidepoint(pygame.mouse.get_pos()):
+                beer_rect = pygame.Rect(x, y, beer_width, beer_height)
+                if beer_rect.collidepoint(pygame.mouse.get_pos()):
                     # Apply the color tint effect (glowing effect)
-                    tinted_image = image.copy()
-                    tinted_image.fill(glow_color, special_flags=pygame.BLEND_RGB_ADD)
-                    window.blit(tinted_image, (x, y))
+                    tinted_beer = beer.copy()
+                    tinted_beer.fill(
+                        glow_color, special_flags=pygame.BLEND_RGB_ADD)
+                    window.blit(tinted_beer, (x, y))
+                    show_beer_details(
+                        i+1, beers_array[i], x, y, beer_width, beer_height)
                 else:
-                    window.blit(image, (x, y))
+                    window.blit(beer, (x, y))
+                    # Display beer details (value and price) below the beer image
+                    show_beer_details(
+                        i+1, beers_array[i], x, y, beer_width, beer_height)
+
+        capacity_text = f"Litros de cerveja: {player_capacity}"
+        capacity_surface = dialogue_font.render(
+            capacity_text, True, (255, 255, 255))
+        capacity_x = 10
+        capacity_y = 10
+        window.blit(capacity_surface, (capacity_x, capacity_y))
+
+        # Display profit marker
+        profit_text = f"Lucro: {player_profit}"
+        profit_surface = dialogue_font.render(
+            profit_text, True, (255, 255, 255))
+        profit_x = 10
+        profit_y = 40
+        window.blit(profit_surface, (profit_x, profit_y))
+
+        # Draw the button rectangle
+        pygame.draw.rect(window, (0, 0, 0), (button_x, button_y, button_width, button_height))
+        
+        # Blit the button text onto the window
+        window.blit(button_text_surface, (button_text_x, button_text_y))
 
         pygame.display.update()
-        pygame.time.Clock().tick(60)  # Limit the frame rate to 60 FPS
+        pygame.time.Clock().tick(FPS)  # Limit the frame rate to 60 FPS
 
-    # Stop the music when the new module ends
-    pygame.mixer.music.stop()
 
-    pygame.quit()
-    
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and clicked_on_screen:
                 current_dialogue_index += 1
@@ -220,13 +295,16 @@ while running:
     window.fill((255, 255, 255))  # Preenche a tela com uma cor de fundo
 
     if not clicked_on_screen:
-        window.blit(background_image, (0, 0))  # Exibe a imagem de fundo da tela inicial
+        # Exibe a imagem de fundo da tela inicial
+        window.blit(background_image, (0, 0))
     else:
-        window.blit(frames[frame_index % len(frames)], (0, 0))  # Exibe o quadro atual do GIF
-        window.blit(character_image, (character_x, character_y))  # Exibe o personagem na tela
+        window.blit(frames[frame_index % len(frames)],
+                    (0, 0))  # Exibe o quadro atual do GIF
+        # Exibe o personagem na tela
+        window.blit(waitress, (waitress_x, waitress_y))
 
         dialogue_x = 0
-        dialogue_y = screen_height - dialogue_height
+        dialogue_y = HEIGHT - dialogue_height
         window.blit(dialogue_surface, (dialogue_x, dialogue_y))
 
         # Limpa o texto anterior
@@ -234,34 +312,45 @@ while running:
 
         if current_dialogue_index < len(dialogue_texts):
             dialogue_text = dialogue_texts[current_dialogue_index]
-            text_surface = dialogue_font.render(dialogue_text, True, (255, 255, 255))
+            text_surface = dialogue_font.render(
+                dialogue_text, True, (255, 255, 255))
             text_x = (dialogue_width - text_surface.get_width()) // 2
             text_y = (dialogue_height - text_surface.get_height()) // 2
             dialogue_surface.blit(text_surface, (text_x, text_y))
-            
+
             dialogue_text = "Clique em espaço para continuar..."
-            text_surface = dialogue_font.render(dialogue_text, True, (255, 255, 255))
+            text_surface = dialogue_font.render(
+                dialogue_text, True, (255, 255, 255))
             text_x = (dialogue_width - text_surface.get_width()) // 1.8
             text_y = (dialogue_height - text_surface.get_height()) // 1.2
             dialogue_surface.blit(text_surface, (text_x, text_y))
 
-        
+        # aqui eh o jogo em si
         elif current_dialogue_index == len(dialogue_texts):
-            dialogue_text = "Barris selecionados: " + ", ".join(selected_barrels_names)
-            text_surface = dialogue_font.render(dialogue_text, True, (255, 255, 255))
-            text_x = (dialogue_width - text_surface.get_width()) // 2
-            text_y = (dialogue_height - text_surface.get_height()) // 2
-            dialogue_surface.blit(text_surface, (text_x, text_y))
             pygame.mixer.music.stop()
-
-            new_module_loop()
-
-            
+            result = in_game_loop(player_capacity, player_profit)
+            if result == "Bankrupt":
+                error_surface = dialogue_font.render(
+                    "Voce morreu. Vendeu o que nao tinha para dar! Restart em 3 segundos", True, (255, 0, 0))
+                error_x = (dialogue_width - error_surface.get_width()) // 2
+                error_y = (dialogue_height - error_surface.get_height()) // 2
+                window.blit(error_surface, (error_x, error_y))
+                pygame.display.update()
+                pygame.time.delay(3000)  # Delay for 2 seconds
+            else:
+                message = f"Voce encontrou um caminho melhor que o knapsack 😮! Voce {result[0]} Knapsack {result[1]}" if result[0] > result[1] else (
+                    f"Parabéns você lucro o máximo que podia! {result[0]}" if result[0] == result[1] else f"Voce lucrou menos que poderia! melhor lucro {result[1]}, comprando {result[2]}")
+                message_surface = dialogue_font.render(message, True, (255, 255, 255))
+                message_x = (dialogue_width - message_surface.get_width()) // 2
+                message_y = (dialogue_height - message_surface.get_height()) // 2
+                window.blit(message_surface, (message_x, message_y))
+                pygame.display.update()
+                pygame.time.delay(3000)  # Delay for 2 seconds
     pygame.display.update()
 
     if clicked_on_screen:
         frame_index += 1
 
-    clock.tick(frame_rate)
+    clock.tick(FPS)
 
 pygame.quit()
