@@ -11,7 +11,7 @@
 
 ## Sobre 
 
-Neste projeto, buscamos explorar o algoritmo de Knapsack de forma descontraída e divertida por meio de um simulador de taverna medieval, utilizando a biblioteca Pygame para criar um jogo mais complexo e interessante. No jogo, o usuário será desafiado a escolher a combinação de itens que resultará no maior lucro possível, levando em consideração a restrição de capacidade máxima de vendas, que é de 100. O objetivo é que o usuário compreenda e pratique o algoritmo de Knapsack enquanto se diverte no jogo. Então, qual será o seu máximo lucro?
+Neste projeto, buscamos explorar o algoritmo de Knapsack de forma descontraída e divertida por meio de um simulador de taverna medieval, utilizando a biblioteca Pygame para criar um jogo mais complexo e interessante. No jogo, o usuário será desafiado a escolher a combinação de itens que resultará no maior lucro possível, levando em consideração a restrição de capacidade máxima de vendas, que é de 100. O objetivo é que o usuário compreenda e pratique o algoritmo de Knapsack enquanto se diverte no jogo. Então, qual será o seu máximo lucro? Link para apresentação se encontra no About do projeto ou pode ser acessado em [link](https://www.youtube.com/watch?v=Qkw_aBGP2Kg)
 
 ## Screenshots
 
