@@ -44,6 +44,7 @@ dialogue_surface = pygame.Surface((dialogue_width, dialogue_height))
 dialogue_surface.fill((0, 0, 0))  # Cor de fundo da barra de diálogo
 
 dialogue_font = pygame.font.Font(None, 24)
+
 dialogue_texts = [
     "Bem vindo de volta Sir Gordo!",
     "Já preparei 100 litros da melhor cerveja do reino de Camaroes",
@@ -89,6 +90,31 @@ clock = pygame.time.Clock()
 # dados do player
 player_capacity = 100
 player_profit = 0
+
+
+def show_dialog(dialog, x, y, surf):
+    dialogue_text = dialog
+    text_surface = dialogue_font.render(
+        dialogue_text, True, (255, 255, 255))
+    text_x = (dialogue_width - text_surface.get_width()) // x
+    text_y = (dialogue_height - text_surface.get_height()) // y
+    surf.blit(text_surface, (text_x, text_y))
+
+
+def show_player_atribute(player_capacity, player_profit):
+    capacity_text = f"Litros de cerveja: {player_capacity}"
+    capacity_surface = dialogue_font.render(
+        capacity_text, True, (255, 255, 255))
+    capacity_x = 10
+    capacity_y = 10
+    window.blit(capacity_surface, (capacity_x, capacity_y))
+    # Display profit marker
+    profit_text = f"Lucro: {player_profit}"
+    profit_surface = dialogue_font.render(
+        profit_text, True, (255, 255, 255))
+    profit_x = 10
+    profit_y = 40
+    window.blit(profit_surface, (profit_x, profit_y))
 
 
 def knapsack(capacity, items):
@@ -163,6 +189,12 @@ def in_game_loop(player_capacity, player_profit):
     max_value, included_items = knapsack(CAPACITY, beers_array)
     random.shuffle(beers_array)
 
+    # Load the image to be displayed
+    beer_width = 100
+    beer_height = 100
+    beer = pygame.image.load("./assets/img/beer.png")
+    beer = pygame.transform.scale(beer, (beer_width, beer_height))
+
     # Load the new module background
     in_game_background = pygame.image.load(
         "./assets/img/ingame_background.png")
@@ -172,12 +204,6 @@ def in_game_loop(player_capacity, player_profit):
     pygame.mixer.music.load("./assets/sound/ingame_music.mp3")
     pygame.mixer.music.set_volume(0.1)
     pygame.mixer.music.play(-1)
-
-    # Load the image to be displayed
-    beer_width = 100
-    beer_height = 100
-    beer = pygame.image.load("./assets/img/beer.png")
-    beer = pygame.transform.scale(beer, (beer_width, beer_height))
 
     # Calculate the horizontal spacing between images
     total_spacing = WIDTH - (beer_width * qnt_beer)
@@ -219,7 +245,6 @@ def in_game_loop(player_capacity, player_profit):
                                     window.blit(in_game_background, (0, 0))
                                     return player_profit, max_value
                                 break
-
         window.blit(in_game_background, (0, 0))
 
         # Display the images equally spaced in the middle of the screen
@@ -243,20 +268,7 @@ def in_game_loop(player_capacity, player_profit):
                     show_beer_details(
                         i+1, beers_array[i], x, y, beer_width, beer_height)
 
-        capacity_text = f"Litros de cerveja: {player_capacity}"
-        capacity_surface = dialogue_font.render(
-            capacity_text, True, (255, 255, 255))
-        capacity_x = 10
-        capacity_y = 10
-        window.blit(capacity_surface, (capacity_x, capacity_y))
-
-        # Display profit marker
-        profit_text = f"Lucro: {player_profit}"
-        profit_surface = dialogue_font.render(
-            profit_text, True, (255, 255, 255))
-        profit_x = 10
-        profit_y = 40
-        window.blit(profit_surface, (profit_x, profit_y))
+        show_player_atribute(player_capacity, player_profit)
 
         pygame.display.update()
         pygame.time.Clock().tick(FPS)  # Limit the frame rate to 60 FPS
@@ -292,31 +304,15 @@ while running:
         dialogue_surface.fill((0, 0, 0))
 
         if current_dialogue_index < len(dialogue_texts):
-            dialogue_text = dialogue_texts[current_dialogue_index]
-            text_surface = dialogue_font.render(
-                dialogue_text, True, (255, 255, 255))
-            text_x = (dialogue_width - text_surface.get_width()) // 2
-            text_y = (dialogue_height - text_surface.get_height()) // 2
-            dialogue_surface.blit(text_surface, (text_x, text_y))
-
-            dialogue_text = "Clique em espaço para continuar..."
-            text_surface = dialogue_font.render(
-                dialogue_text, True, (255, 255, 255))
-            text_x = (dialogue_width - text_surface.get_width()) // 1.8
-            text_y = (dialogue_height - text_surface.get_height()) // 1.2
-            dialogue_surface.blit(text_surface, (text_x, text_y))
-
-        # aqui eh o jogo em si
-        elif current_dialogue_index == len(dialogue_texts):
-            pygame.mixer.music.stop()
+            show_dialog(
+                dialogue_texts[current_dialogue_index], 2, 2, dialogue_surface)
+            show_dialog("Clique em espaço para continuar...",
+                        1.8, 1.2, dialogue_surface)
+            if current_dialogue_index == len(dialogue_texts):
+                pygame.mixer.music.stop()
+        else:
             player_res, knap_res = in_game_loop(player_capacity, player_profit)
-            message = message_res(player_res, knap_res)
-            message_surface = dialogue_font.render(
-                message, True, (255, 255, 255))
-            message_x = (dialogue_width - message_surface.get_width()) // 2
-            message_y = (dialogue_height -
-                         message_surface.get_height()) // 2
-            window.blit(message_surface, (message_x, message_y))
+            show_dialog(message_res(player_res, knap_res), 2, 2, window)
             pygame.display.update()
             pygame.time.delay(5000)  # Delay for 2 seconds
     pygame.display.update()
